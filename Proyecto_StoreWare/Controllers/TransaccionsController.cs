@@ -11,9 +11,9 @@ namespace Proyecto_StoreWare.Controllers
 {
     public class TransaccionsController : Controller
     {
-        private readonly StoreWareDataBase _context;
+        private readonly StoreWare _context;
 
-        public TransaccionsController(StoreWareDataBase context)
+        public TransaccionsController(StoreWare context)
         {
             _context = context;
         }
@@ -21,7 +21,8 @@ namespace Proyecto_StoreWare.Controllers
         // GET: Transaccions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Transaccion.ToListAsync());
+            var storeWare = _context.Transaccion.Include(t => t.Pago).Include(t => t.Producto).Include(t => t.Usuario);
+            return View(await storeWare.ToListAsync());
         }
 
         // GET: Transaccions/Details/5
@@ -33,6 +34,9 @@ namespace Proyecto_StoreWare.Controllers
             }
 
             var transaccion = await _context.Transaccion
+                .Include(t => t.Pago)
+                .Include(t => t.Producto)
+                .Include(t => t.Usuario)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (transaccion == null)
             {
@@ -45,6 +49,9 @@ namespace Proyecto_StoreWare.Controllers
         // GET: Transaccions/Create
         public IActionResult Create()
         {
+            ViewData["PagoId"] = new SelectList(_context.Set<Pago>(), "Id", "Nombre");
+            ViewData["ProductoId"] = new SelectList(_context.Set<Producto>(), "Id", "Categoria");
+            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "Contraseña");
             return View();
         }
 
@@ -53,7 +60,7 @@ namespace Proyecto_StoreWare.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UsuarioId,ProductoId,Cantidad,Fecha,Estado")] Transaccion transaccion)
+        public async Task<IActionResult> Create([Bind("Id,UsuarioId,ProductoId,PagoId,Cantidad,Fecha,Estado")] Transaccion transaccion)
         {
             if (ModelState.IsValid)
             {
@@ -61,6 +68,9 @@ namespace Proyecto_StoreWare.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["PagoId"] = new SelectList(_context.Set<Pago>(), "Id", "Nombre", transaccion.PagoId);
+            ViewData["ProductoId"] = new SelectList(_context.Set<Producto>(), "Id", "Categoria", transaccion.ProductoId);
+            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "Contraseña", transaccion.UsuarioId);
             return View(transaccion);
         }
 
@@ -77,6 +87,9 @@ namespace Proyecto_StoreWare.Controllers
             {
                 return NotFound();
             }
+            ViewData["PagoId"] = new SelectList(_context.Set<Pago>(), "Id", "Nombre", transaccion.PagoId);
+            ViewData["ProductoId"] = new SelectList(_context.Set<Producto>(), "Id", "Categoria", transaccion.ProductoId);
+            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "Contraseña", transaccion.UsuarioId);
             return View(transaccion);
         }
 
@@ -85,7 +98,7 @@ namespace Proyecto_StoreWare.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UsuarioId,ProductoId,Cantidad,Fecha,Estado")] Transaccion transaccion)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UsuarioId,ProductoId,PagoId,Cantidad,Fecha,Estado")] Transaccion transaccion)
         {
             if (id != transaccion.Id)
             {
@@ -112,6 +125,9 @@ namespace Proyecto_StoreWare.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["PagoId"] = new SelectList(_context.Set<Pago>(), "Id", "Nombre", transaccion.PagoId);
+            ViewData["ProductoId"] = new SelectList(_context.Set<Producto>(), "Id", "Categoria", transaccion.ProductoId);
+            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "Contraseña", transaccion.UsuarioId);
             return View(transaccion);
         }
 
@@ -124,6 +140,9 @@ namespace Proyecto_StoreWare.Controllers
             }
 
             var transaccion = await _context.Transaccion
+                .Include(t => t.Pago)
+                .Include(t => t.Producto)
+                .Include(t => t.Usuario)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (transaccion == null)
             {

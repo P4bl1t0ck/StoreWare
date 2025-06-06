@@ -9,22 +9,22 @@ using Proyecto_StoreWare.Models;
 
 namespace Proyecto_StoreWare.Controllers
 {
-    public class PagosController : Controller
+    public class PagoesController : Controller
     {
-        private readonly StoreWareDataBase _context;
+        private readonly StoreWare _context;
 
-        public PagosController(StoreWareDataBase context)
+        public PagoesController(StoreWare context)
         {
             _context = context;
         }
 
-        // GET: Pagos
+        // GET: Pagoes
         public async Task<IActionResult> Index()
         {
             return View(await _context.Pago.ToListAsync());
         }
 
-        // GET: Pagos/Details/5
+        // GET: Pagoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,13 +42,13 @@ namespace Proyecto_StoreWare.Controllers
             return View(pago);
         }
 
-        // GET: Pagos/Create
+        // GET: Pagoes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Pagos/Create
+        // POST: Pagoes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -64,7 +64,7 @@ namespace Proyecto_StoreWare.Controllers
             return View(pago);
         }
 
-        // GET: Pagos/Edit/5
+        // GET: Pagoes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,7 +80,7 @@ namespace Proyecto_StoreWare.Controllers
             return View(pago);
         }
 
-        // POST: Pagos/Edit/5
+        // POST: Pagoes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -115,7 +115,7 @@ namespace Proyecto_StoreWare.Controllers
             return View(pago);
         }
 
-        // GET: Pagos/Delete/5
+        // GET: Pagoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,7 +133,7 @@ namespace Proyecto_StoreWare.Controllers
             return View(pago);
         }
 
-        // POST: Pagos/Delete/5
+        // POST: Pagoes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

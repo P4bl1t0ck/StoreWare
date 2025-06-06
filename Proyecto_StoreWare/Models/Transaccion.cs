@@ -10,10 +10,17 @@ namespace Proyecto_StoreWare.Models
         [Required]
         [ForeignKey("Usuario")]
         public int UsuarioId { get; set; }
+        public Usuario Usuario { get; set; }
 
         [Required]
         [ForeignKey("Producto")]
         public int ProductoId { get; set; }
+        public Producto Producto { get; set; }
+
+        [Required]
+        [ForeignKey("Pago")]
+        public int PagoId { get; set; }    
+        public Pago Pago { get; set; }
 
         [Required(ErrorMessage = "La cantidad es obligatoria.")]
         [Range(1,999, ErrorMessage = "La cantidad debe ser al menos 1.")]

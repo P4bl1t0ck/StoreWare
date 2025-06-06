@@ -17,11 +17,12 @@ namespace Proyecto_StoreWare.Models
         [StringLength(100, MinimumLength = 6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres.")]
         public string Contraseña { get; set; }
         [Required(ErrorMessage ="Direcion es nesecaria")]
-        [MaxLength(100, ErrorMessage = "La dirección no puede exceder los 100 caracteres.")]//Copi Help.
+        [MaxLength(100, ErrorMessage = "La dirección no puede exceder los 100 caracteres.")]
         public string Direccion { get; set; }
         [Required(ErrorMessage = "El teléfono es Obligatorio")]
-        [MaxLength(15, ErrorMessage = "El teléfono no puede exceder los 15 caracteres.")]//Copi Help.
+        [MaxLength(15, ErrorMessage = "El teléfono no puede exceder los 15 caracteres.")]
         public string Telefono { get; set; }
 
+        public ICollection<Transaccion> Transacciones { get; set; }
     }
 }

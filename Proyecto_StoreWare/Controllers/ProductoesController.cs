@@ -9,23 +9,23 @@ using Proyecto_StoreWare.Models;
 
 namespace Proyecto_StoreWare.Controllers
 {
-    public class ProductoController : Controller
+    public class ProductoesController : Controller
     {
-        private readonly StoreWareDataBase _context;
+        private readonly StoreWare _context;
 
-        public ProductoController(StoreWareDataBase context)
+        public ProductoesController(StoreWare context)
         {
             _context = context;
         }
 
-        // GET: Producto
+        // GET: Productoes
         public async Task<IActionResult> Index()
         {
-            var storeWareDataBase = _context.Producto.Include(p => p.Proveedor);
-            return View(await storeWareDataBase.ToListAsync());
+            var storeWare = _context.Producto.Include(p => p.Proveedor);
+            return View(await storeWare.ToListAsync());
         }
 
-        // GET: Producto/Details/5
+        // GET: Productoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,14 +44,14 @@ namespace Proyecto_StoreWare.Controllers
             return View(producto);
         }
 
-        // GET: Producto/Create
+        // GET: Productoes/Create
         public IActionResult Create()
         {
-            ViewData["ProveedorId"] = new SelectList(_context.Set<Proveedor>(), "Id", "Email");
+            ViewData["ProveedorId"] = new SelectList(_context.Proveedor, "Id", "Email");
             return View();
         }
 
-        // POST: Producto/Create
+        // POST: Productoes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -64,11 +64,11 @@ namespace Proyecto_StoreWare.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProveedorId"] = new SelectList(_context.Set<Proveedor>(), "Id", "Email", producto.ProveedorId);
+            ViewData["ProveedorId"] = new SelectList(_context.Proveedor, "Id", "Email", producto.ProveedorId);
             return View(producto);
         }
 
-        // GET: Producto/Edit/5
+        // GET: Productoes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,11 +81,11 @@ namespace Proyecto_StoreWare.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProveedorId"] = new SelectList(_context.Set<Proveedor>(), "Id", "Email", producto.ProveedorId);
+            ViewData["ProveedorId"] = new SelectList(_context.Proveedor, "Id", "Email", producto.ProveedorId);
             return View(producto);
         }
 
-        // POST: Producto/Edit/5
+        // POST: Productoes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -117,11 +117,11 @@ namespace Proyecto_StoreWare.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProveedorId"] = new SelectList(_context.Set<Proveedor>(), "Id", "Email", producto.ProveedorId);
+            ViewData["ProveedorId"] = new SelectList(_context.Proveedor, "Id", "Email", producto.ProveedorId);
             return View(producto);
         }
 
-        // GET: Producto/Delete/5
+        // GET: Productoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,7 +140,7 @@ namespace Proyecto_StoreWare.Controllers
             return View(producto);
         }
 
-        // POST: Producto/Delete/5
+        // POST: Productoes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

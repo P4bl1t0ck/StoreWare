@@ -9,22 +9,22 @@ using Proyecto_StoreWare.Models;
 
 namespace Proyecto_StoreWare.Controllers
 {
-    public class AdministradorController : Controller
+    public class AdministradorsController : Controller
     {
-        private readonly StoreWareDataBase _context;
+        private readonly StoreWare _context;
 
-        public AdministradorController(StoreWareDataBase context)
+        public AdministradorsController(StoreWare context)
         {
             _context = context;
         }
 
-        // GET: Administrador
+        // GET: Administradors
         public async Task<IActionResult> Index()
         {
             return View(await _context.Administrador.ToListAsync());
         }
 
-        // GET: Administrador/Details/5
+        // GET: Administradors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,13 +42,13 @@ namespace Proyecto_StoreWare.Controllers
             return View(administrador);
         }
 
-        // GET: Administrador/Create
+        // GET: Administradors/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Administrador/Create
+        // POST: Administradors/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -64,7 +64,7 @@ namespace Proyecto_StoreWare.Controllers
             return View(administrador);
         }
 
-        // GET: Administrador/Edit/5
+        // GET: Administradors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,7 +80,7 @@ namespace Proyecto_StoreWare.Controllers
             return View(administrador);
         }
 
-        // POST: Administrador/Edit/5
+        // POST: Administradors/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -115,7 +115,7 @@ namespace Proyecto_StoreWare.Controllers
             return View(administrador);
         }
 
-        // GET: Administrador/Delete/5
+        // GET: Administradors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,7 +133,7 @@ namespace Proyecto_StoreWare.Controllers
             return View(administrador);
         }
 
-        // POST: Administrador/Delete/5
+        // POST: Administradors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

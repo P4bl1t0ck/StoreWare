@@ -14,6 +14,6 @@ namespace Proyecto_StoreWare.Models
         [Required(ErrorMessage = "El tipo de pago es obligatorio.")]
         [MaxLength(50, ErrorMessage = "El tipo de pago no puede exceder los 50 caracteres.")]
         public string Tipo { get; set; }
-
+        public ICollection<Transaccion> Transacciones { get; set; }
     }
 }

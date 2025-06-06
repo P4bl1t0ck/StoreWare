@@ -11,9 +11,9 @@ namespace Proyecto_StoreWare.Controllers
 {
     public class UsuariosController : Controller
     {
-        private readonly StoreWareDataBase _context;
+        private readonly StoreWare _context;
 
-        public UsuariosController(StoreWareDataBase context)
+        public UsuariosController(StoreWare context)
         {
             _context = context;
         }

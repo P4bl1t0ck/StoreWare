@@ -13,10 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UsuarioId)
+                @Html.DisplayNameFor(model => model.Usuario)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProductoId)
+                @Html.DisplayNameFor(model => model.Producto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pago)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Cantidad)
@@ -34,10 +37,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.UsuarioId)
+                @Html.DisplayFor(modelItem => item.Usuario.Contraseña)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ProductoId)
+                @Html.DisplayFor(modelItem => item.Producto.Categoria)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pago.Nombre)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Cantidad)

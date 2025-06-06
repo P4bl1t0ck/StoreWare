@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Proyecto_StoreWare.Migrations
 {
-    [DbContext(typeof(StoreWareDataBase))]
-    [Migration("20250430234223_Migracion Inicial")]
-    partial class MigracionInicial
+    [DbContext(typeof(StoreWare))]
+    [Migration("20250606231837_OtraoportunidadOtraOportunidad")]
+    partial class OtraoportunidadOtraOportunidad
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,6 +123,9 @@ namespace Proyecto_StoreWare.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AdministradorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -137,6 +140,8 @@ namespace Proyecto_StoreWare.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdministradorId");
 
                     b.ToTable("Proveedor");
                 });
@@ -160,6 +165,9 @@ namespace Proyecto_StoreWare.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("PagoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
 
@@ -167,6 +175,12 @@ namespace Proyecto_StoreWare.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PagoId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Transaccion");
                 });
@@ -211,12 +225,70 @@ namespace Proyecto_StoreWare.Migrations
             modelBuilder.Entity("Proyecto_StoreWare.Models.Producto", b =>
                 {
                     b.HasOne("Proyecto_StoreWare.Models.Proveedor", "Proveedor")
-                        .WithMany()
+                        .WithMany("Productos")
                         .HasForeignKey("ProveedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Proveedor");
+                });
+
+            modelBuilder.Entity("Proyecto_StoreWare.Models.Proveedor", b =>
+                {
+                    b.HasOne("Proyecto_StoreWare.Models.Administrador", "Administrador")
+                        .WithMany()
+                        .HasForeignKey("AdministradorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Administrador");
+                });
+
+            modelBuilder.Entity("Proyecto_StoreWare.Models.Transaccion", b =>
+                {
+                    b.HasOne("Proyecto_StoreWare.Models.Pago", "Pago")
+                        .WithMany("Transacciones")
+                        .HasForeignKey("PagoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Proyecto_StoreWare.Models.Producto", "Producto")
+                        .WithMany("Transacciones")
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Proyecto_StoreWare.Models.Usuario", "Usuario")
+                        .WithMany("Transacciones")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pago");
+
+                    b.Navigation("Producto");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Proyecto_StoreWare.Models.Pago", b =>
+                {
+                    b.Navigation("Transacciones");
+                });
+
+            modelBuilder.Entity("Proyecto_StoreWare.Models.Producto", b =>
+                {
+                    b.Navigation("Transacciones");
+                });
+
+            modelBuilder.Entity("Proyecto_StoreWare.Models.Proveedor", b =>
+                {
+                    b.Navigation("Productos");
+                });
+
+            modelBuilder.Entity("Proyecto_StoreWare.Models.Usuario", b =>
+                {
+                    b.Navigation("Transacciones");
                 });
 #pragma warning restore 612, 618
         }
