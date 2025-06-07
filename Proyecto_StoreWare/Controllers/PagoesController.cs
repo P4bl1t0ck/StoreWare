@@ -9,8 +9,7 @@ using Proyecto_StoreWare.Models;
 
 namespace Proyecto_StoreWare.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    
     public class PagoesController : Controller
     {
         private readonly StoreWare _context;
@@ -19,70 +18,9 @@ namespace Proyecto_StoreWare.Controllers
         {
             _context = context;
         }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pago>>> GetPago()
-        {
-            return await _context.Pago.ToListAsync();
-        }
-        [HttpGet]
-        public async Task<ActionResult<Pago>> GetPago(int id)
-        {
-            var pago = await _context.Pago.FindAsync(id);
-            if (pago == null)
-            {
-                return NotFound();
-            }
-            return pago;
-        }
-        // POST: Administradors
-        [HttpPost]
-        public async Task<ActionResult<Pago>> PostPago(Pago pago)
-        {
-            _context.Pago.Add(pago);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetPago), new { id = pago.Id }, pago);
-        }
-        // PUT: Administradors/5
-        [HttpPut]
-        public async Task<IActionResult> PutPago(int id, Pago pago)
-        {
-            if (id != pago.Id)
-            {
-                return BadRequest();
-            }
-            _context.Entry(pago).State = EntityState.Modified;
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PagoExists(pago.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return NoContent();
-        }
-        // DELETE: Administradors/5
-        [HttpDelete]
-        public async Task<IActionResult> DeletePago(int id)
-        {
-            var pago = await _context.Pago.FindAsync(id);
-            if (pago == null)
-            {
-                return NotFound();
-            }
-            _context.Pago.Remove(pago);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
+        
+        
+       
         // GET: Pagoes
         public async Task<IActionResult> Index()
         {
@@ -115,7 +53,6 @@ namespace Proyecto_StoreWare.Controllers
 
         // POST: Pagoes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Tipo")] Pago pago)

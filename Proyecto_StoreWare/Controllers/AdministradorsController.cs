@@ -9,8 +9,7 @@ using Proyecto_StoreWare.Models;
 
 namespace Proyecto_StoreWare.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    
     public class AdministradorsController : Controller
     {
         private readonly StoreWare _context;
@@ -19,74 +18,7 @@ namespace Proyecto_StoreWare.Controllers
         {
             _context = context;
         }
-        /// <summary>
-        /// Los metodos de este controlador manejan las operaciones CRUD para los administradores.
-        /// </summary>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Administrador>>> GetAdministradors()
-        {
-            return await _context.Administrador.ToListAsync();
-        }
-        [HttpGet]
-        public async Task<ActionResult<Administrador>> GetUsuario(int id)
-        {
-            var administrador = await _context.Administrador.FindAsync(id);
-            if (administrador == null)
-            {
-                return NotFound();
-            }
-            return administrador;
-        }
-        // POST: Administradors
-        [HttpPost]
-        public async Task<ActionResult<Administrador>> PostAdministrador(Administrador administrador)
-        {
-            _context.Administrador.Add(administrador);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUsuario), new { id = administrador.Id }, administrador);
-        }
-        // PUT: Administradors/5
-        [HttpPut]
-        public async Task<IActionResult> PutAdministrador(int id, Administrador administrador)
-        {
-            if (id != administrador.Id)
-            {
-                return BadRequest();
-            }
-            _context.Entry(administrador).State = EntityState.Modified;
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AdministradorExists(administrador.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return NoContent();
-        }
-        // DELETE: Administradors/5
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAdministrador(int id)
-        {
-            var administrador = await _context.Administrador.FindAsync(id);
-            if (administrador == null)
-            {
-                return NotFound();
-            }
-            _context.Administrador.Remove(administrador);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-
-        // GET: Administradors
+      // GET: Administradors
         public async Task<IActionResult> Index()
         {
             return View(await _context.Administrador.ToListAsync());

@@ -9,8 +9,7 @@ using Proyecto_StoreWare.Models;
 
 namespace Proyecto_StoreWare.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+
     public class TransaccionsController : Controller
     {
         private readonly StoreWare _context;
@@ -25,43 +24,6 @@ namespace Proyecto_StoreWare.Controllers
         {
             var storeWare = _context.Transaccion.Include(t => t.Pago).Include(t => t.Producto).Include(t => t.Usuario);
             return View(await storeWare.ToListAsync());
-        }
-        //Here we should create a method to search for transactions by user, product, or date.
-        //We just need to show our transactions and delete them if necessary.
-        //So we will not create a search method for now, but we can add it later if needed.
-        //Method to show all transactions.
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Transaccion>>> GetTransaccions() 
-        {
-            return await _context.Transaccion.ToListAsync();
-        }
-        //Method to get a specific transaction by id.
-        [HttpGet]
-        public async Task<ActionResult<Transaccion>> GetTransaccion(int id) 
-        {
-            var transaccion = await _context.Transaccion.FindAsync(id);
-            if (transaccion == null)
-            {
-                return NotFound();
-            }
-            return transaccion;
-        }
-        //Method for delete transaction by id.
-        [HttpDelete]
-        public async Task<ActionResult<Transaccion>> DeleteTransaccion(int id) 
-        {
-            var transaccion = await _context.Transaccion.FindAsync(id);
-            if (transaccion == null)
-            {
-                return NotFound();
-            }else
-            {
-                _context.Transaccion.Remove(transaccion);
-                await _context.SaveChangesAsync();
-                return transaccion;
-            }
-
-            //return null;
         }
         // GET: Transaccions/Details/5
         public async Task<IActionResult> Details(int? id)
