@@ -20,7 +20,23 @@ namespace Proyecto_StoreWare.Controllers
             _context = context;
         }
         //Starts again.
-
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Producto>>> GetandSearchProductos(int id) 
+        { 
+            if (id == 0 )
+            {
+                return await _context.Producto.Include(p => p.Proveedor).ToListAsync();
+            }
+            else
+            {
+                var producto = await _context.Producto.Include(p => p.Proveedor).FirstOrDefaultAsync(m => m.Id == id);
+                if (producto == null)
+                {
+                    return NotFound();
+                }
+                return new List<Producto> { producto };//Retorna un listado con un solo producto, el que se busca por id.
+            }
+        }
 
         // GET: Productoes
         public async Task<IActionResult> Index()
