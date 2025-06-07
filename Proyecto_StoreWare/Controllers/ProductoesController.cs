@@ -9,6 +9,8 @@ using Proyecto_StoreWare.Models;
 
 namespace Proyecto_StoreWare.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class ProductoesController : Controller
     {
         private readonly StoreWare _context;
@@ -17,6 +19,8 @@ namespace Proyecto_StoreWare.Controllers
         {
             _context = context;
         }
+        //Starts again.
+
 
         // GET: Productoes
         public async Task<IActionResult> Index()

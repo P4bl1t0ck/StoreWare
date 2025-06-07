@@ -3,9 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<StoreWare>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StoreWare") ?? throw new InvalidOperationException("Connection string 'StoreWare' not found.")));
-builder.Services.AddDbContext<StoreWare>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StoreWare") ?? throw new InvalidOperationException("Connection string 'StoreWareDataBase' not found.")));
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
