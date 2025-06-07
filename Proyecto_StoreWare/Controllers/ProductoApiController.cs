@@ -15,26 +15,23 @@ namespace Proyecto_StoreWare.Controllers.Api
         {
             _context = context;
         }
-
-
-        //Starts again.
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Producto>>> GetandSearchProductos(int id)
+        public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
-            if (id == 0)
-            {
-                return await _context.Producto.Include(p => p.Proveedor).ToListAsync();
-            }
-            else
-            {
-                var producto = await _context.Producto.Include(p => p.Proveedor).FirstOrDefaultAsync(m => m.Id == id);
-                if (producto == null)
-                {
-                    return NotFound();
-                }
-                return new List<Producto> { producto };//Retorna un listado con un solo producto, el que se busca por id.
-            }
+            return await _context.Producto.Include(p => p.Proveedor).ToListAsync();
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Producto>> GetProducto(int id)
+        {
+            var producto = await _context.Producto.Include(p => p.Proveedor).FirstOrDefaultAsync(p => p.Id == id);
+            if (producto == null)
+            {
+                return NotFound();
+            }
+            return producto;
+        }
+
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(Producto producto)
         {
@@ -42,20 +39,23 @@ namespace Proyecto_StoreWare.Controllers.Api
             {
                 _context.Producto.Add(producto);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetandSearchProductos), new { id = producto.Id }, producto);
+                return CreatedAtAction(nameof(GetProducto), new { id = producto.Id }, producto);
             }
             return BadRequest(ModelState);
         }
-        [HttpPut]
+
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutProducto(int id, Producto producto)
         {
             if (id != producto.Id)
             {
                 return BadRequest();
             }
+
             if (ModelState.IsValid)
             {
                 _context.Entry(producto).State = EntityState.Modified;
+
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -71,25 +71,32 @@ namespace Proyecto_StoreWare.Controllers.Api
                         throw;
                     }
                 }
+
                 return NoContent();
             }
+
             return BadRequest(ModelState);
         }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteProducto(int id)
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProductoById(int id)
         {
             var producto = await _context.Producto.FindAsync(id);
             if (producto == null)
             {
                 return NotFound();
             }
+
             _context.Producto.Remove(producto);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
+
         private bool ProductoExists(int id)
         {
-            return _context.Usuario.Any(e => e.Id == id);
+            return _context.Producto.Any(e => e.Id == id);
         }
+
     }
 }

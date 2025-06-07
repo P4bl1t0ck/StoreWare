@@ -15,14 +15,16 @@ namespace Proyecto_StoreWare.Controllers.Api
         {
             _context = context;
         }
+
+        // GET: api/PagoApi/all
         [HttpGet]
-        [Route("Agregar")]
-        public async Task<ActionResult<IEnumerable<Pago>>> GetPago()
+        public async Task<ActionResult<IEnumerable<Pago>>> GetAllPagos()
         {
             return await _context.Pago.ToListAsync();
         }
-        [HttpGet]
-        public async Task<ActionResult<Pago>> GetPago(int id)
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Pago>> GetPagoById(int id)
         {
             var pago = await _context.Pago.FindAsync(id);
             if (pago == null)
@@ -31,32 +33,43 @@ namespace Proyecto_StoreWare.Controllers.Api
             }
             return pago;
         }
-        // POST: Administradors
+
         [HttpPost]
-        [Route("Ver")]
         public async Task<ActionResult<Pago>> PostPago(Pago pago)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Pago.Add(pago);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetPago), new { id = pago.Id }, pago);
+
+            return CreatedAtAction(nameof(GetPagoById), new { id = pago.Id }, pago);
         }
-        // PUT: Administradors/5
-        [HttpPut]
-        [Route("Agregar")]
+
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutPago(int id, Pago pago)
         {
             if (id != pago.Id)
             {
                 return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Entry(pago).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PagoExists(pago.Id))
+                if (!PagoExists(id))
                 {
                     return NotFound();
                 }
@@ -65,15 +78,11 @@ namespace Proyecto_StoreWare.Controllers.Api
                     throw;
                 }
             }
+
             return NoContent();
         }
-        // DELETE: Administradors/5
-        private bool PagoExists(int id)
-        {
-            return _context.Usuario.Any(e => e.Id == id);
-        }
-        [HttpDelete]
-        [Route("Borrar")]
+
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePago(int id)
         {
             var pago = await _context.Pago.FindAsync(id);
@@ -81,10 +90,18 @@ namespace Proyecto_StoreWare.Controllers.Api
             {
                 return NotFound();
             }
+
             _context.Pago.Remove(pago);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
+        private bool PagoExists(int id)
+        {
+            return _context.Pago.Any(e => e.Id == id);
+        }
+
     }
+
 }

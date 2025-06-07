@@ -7,21 +7,23 @@ namespace Proyecto_StoreWare.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdministradorsApiController : ControllerBase
+    public class AdministradoresApiController : ControllerBase
     {
         private readonly StoreWare _context;
 
-        public AdministradorsApiController(StoreWare context)
+        public AdministradoresApiController(StoreWare context)
         {
             _context = context;
         }
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Administrador>>> GetAdministradors()
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Administrador>>> GetAdministradores()
         {
             return await _context.Administrador.ToListAsync();
         }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<Administrador>> GetUsuario(int id)
+        public async Task<ActionResult<Administrador>> GetAdministrador(int id)
         {
             var administrador = await _context.Administrador.FindAsync(id);
             if (administrador == null)
@@ -30,15 +32,21 @@ namespace Proyecto_StoreWare.Controllers.Api
             }
             return administrador;
         }
-        // POST: Administradors
+
         [HttpPost]
         public async Task<ActionResult<Administrador>> PostAdministrador(Administrador administrador)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Administrador.Add(administrador);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUsuario), new { id = administrador.Id }, administrador);
+
+            return CreatedAtAction(nameof(GetAdministrador), new { id = administrador.Id }, administrador);
         }
-        // PUT: Administradors/5
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAdministrador(int id, Administrador administrador)
         {
@@ -46,7 +54,14 @@ namespace Proyecto_StoreWare.Controllers.Api
             {
                 return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Entry(administrador).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -62,13 +77,10 @@ namespace Proyecto_StoreWare.Controllers.Api
                     throw;
                 }
             }
+
             return NoContent();
         }
-        private bool AdministradorExists(int id)
-        {
-            return _context.Usuario.Any(e => e.Id == id);
-        }
-        // DELETE: Administradors/5
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAdministrador(int id)
         {
@@ -77,9 +89,18 @@ namespace Proyecto_StoreWare.Controllers.Api
             {
                 return NotFound();
             }
+
             _context.Administrador.Remove(administrador);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
+
+        private bool AdministradorExists(int id)
+        {
+            return _context.Administrador.Any(e => e.Id == id);
+        }
     }
+
+
 }

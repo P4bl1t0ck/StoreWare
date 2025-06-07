@@ -10,24 +10,20 @@ namespace Proyecto_StoreWare.Controllers.Api
     public class UsuariosApiController : ControllerBase
     {
         private readonly StoreWare _context;
-        //Nuestra base de datos se llama StoreWare y es la que contiene la entidad Usuario.
 
         public UsuariosApiController(StoreWare context)
         {
             _context = context;
         }
-        // GET: api/Usuarios
+
         [HttpGet]
-        [Route("List")]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetAllUsuarios()
         {
-            //var usuarios = await _context.Usuario.ToListAsync();
             return await _context.Usuario.ToListAsync();
         }
-        // GET: api/Usuarios/5
-        [HttpGet]
-        [Route("Buscar")]
-        public async Task<ActionResult<Usuario>> GetUsuario(int id)
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Usuario>> GetUsuarioById(int id)
         {
             var usuario = await _context.Usuario.FindAsync(id);
             if (usuario == null)
@@ -36,25 +32,25 @@ namespace Proyecto_StoreWare.Controllers.Api
             }
             return usuario;
         }
-        // POST: api/Usuarios
+
         [HttpPost]
-        [Route("Agregar")]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
             _context.Usuario.Add(usuario);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUsuario), new { id = usuario.Id }, usuario);
+            return CreatedAtAction(nameof(GetUsuarioById), new { id = usuario.Id }, usuario);
         }
-        // PUT: api/Usuarios/5
-        [HttpPut]
-        [Route("Agregar")]
+
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
         {
             if (id != usuario.Id)
             {
                 return BadRequest();
             }
+
             _context.Entry(usuario).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -70,15 +66,11 @@ namespace Proyecto_StoreWare.Controllers.Api
                     throw;
                 }
             }
+
             return NoContent();
         }
-        private bool UsuarioExists(int id)
-        {
-            return _context.Usuario.Any(e => e.Id == id);
-        }
-        // DELETE: api/Usuarios/5
-        [HttpDelete]
-        [Route("Borrar")]
+
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
             var usuario = await _context.Usuario.FindAsync(id);
@@ -86,9 +78,17 @@ namespace Proyecto_StoreWare.Controllers.Api
             {
                 return NotFound();
             }
+
             _context.Usuario.Remove(usuario);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
+
+        private bool UsuarioExists(int id)
+        {
+            return _context.Usuario.Any(e => e.Id == id);
+        }
     }
+
 }
