@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Proyecto_StoreWare.Models
 {
+    [Table("Productos")] // Explicitamos el nombre de la tabla
     public class Producto
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Para autoincrement en SQLite
         public int Id { get; set; }
 
         [Required]
@@ -17,9 +19,10 @@ namespace Proyecto_StoreWare.Models
         [MaxLength(500)]
         public string Descripcion { get; set; }
 
+        // SQLite no soporta "Precision(18,2)" directamente. Alternativas:
         [Required]
         [Range(1.00, 100000.00)]
-        [Precision(18, 2)]
+        [Column(TypeName = "decimal(18,2)")] // Conversión implícita en SQLite
         public decimal Precio { get; set; }
 
         [Required]
@@ -30,17 +33,14 @@ namespace Proyecto_StoreWare.Models
         [MaxLength(50)]
         public string Categoria { get; set; }
 
+        // Relación con Proveedor (ajustada para SQLite)
         [Required]
-        [ForeignKey("Proveedor")]
+        [ForeignKey("ProveedorId")]
         public int ProveedorId { get; set; }
 
         public Proveedor Proveedor { get; set; }
 
-        public ICollection<Transaccion> Transacciones { get; set; }
-
-        public Producto()
-        {
-            Transacciones = new HashSet<Transaccion>();
-        }
+        // Colección de Transacciones (relación inversa)
+        public ICollection<Transaccion> Transacciones { get; set; } = new HashSet<Transaccion>();
     }
 }

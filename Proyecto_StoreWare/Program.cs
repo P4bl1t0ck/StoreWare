@@ -4,8 +4,18 @@ using Proyecto_StoreWare.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configurar DbContext con cadena de conexión (ejemplo con SQL Server)
+/*builder.Services.AddDbContext<StoreWare>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));*/
+
+
 builder.Services.AddDbContext<StoreWare>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+#if ANDROID || IOS
+    options.UseSqlite("Filename=storeware.db");
+#else
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+#endif
+});
 
 // Añadir controladores
 builder.Services.AddControllers();
