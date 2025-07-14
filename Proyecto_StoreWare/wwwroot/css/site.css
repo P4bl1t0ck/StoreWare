@@ -20,3 +20,24 @@ html {
 body {
   margin-bottom: 60px;
 }
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.container {
+    max-width: 960px;
+}
+
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.btn-sm {
+    margin-right: 5px;
+}
