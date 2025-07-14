@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto_StoreWare.Interfaces;
 using Proyecto_StoreWare.Models;
 
 namespace Proyecto_StoreWare.Controllers.Api
@@ -9,86 +8,67 @@ namespace Proyecto_StoreWare.Controllers.Api
     [Route("api/[controller]")]
     public class UsuariosApiController : ControllerBase
     {
-        private readonly StoreWare _context;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuariosApiController(StoreWare context)
+        // Solo inyectamos el servicio, no el contexto directo
+        public UsuariosApiController(IUsuarioService usuarioService)
         {
-            _context = context;
+            _usuarioService = usuarioService;
         }
-
+        /*
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetAllUsuarios()
         {
-            return await _context.Usuario.ToListAsync();
+            var usuarios = await _usuarioService.GetAllUsuariosAsync(); // Nuevo método a implementar
+            return Ok(usuarios);
         }
-
+        */
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuario>> GetUsuarioById(int id)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-            return usuario;
+            var usuario = await _usuarioService.GetUsuarioByIdAsync(id);
+            return usuario != null ? Ok(usuario) : NotFound();
         }
 
         [HttpPost]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
-            _context.Usuario.Add(usuario);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUsuarioById), new { id = usuario.Id }, usuario);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _usuarioService.RegisterAsync(usuario);
+            return result ? CreatedAtAction(nameof(GetUsuarioById), new { id = usuario.Id }, usuario) : BadRequest("Error al registrar");
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
         {
-            if (id != usuario.Id)
-            {
+            if (id != usuario.Id || !ModelState.IsValid)
                 return BadRequest();
-            }
 
-            _context.Entry(usuario).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsuarioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var result = await _usuarioService.UpdatePerfilAsync(usuario);
+            return result ? NoContent() : NotFound();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
-            _context.Usuario.Remove(usuario);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            var result = await _usuarioService.DeleteUsuarioAsync(id);
+            return result ? NoContent() : NotFound();
         }
 
-        private bool UsuarioExists(int id)
+        [HttpPost("login")]
+        public async Task<ActionResult<Usuario>> Login(LoginRequest request)
         {
-            return _context.Usuario.Any(e => e.Id == id);
+            var usuario = await _usuarioService.LoginAsync(request.Email, request.Contraseña);
+            return usuario != null ? Ok(usuario) : Unauthorized();
         }
     }
 
+    // DTO para login
+    public class LoginRequest
+    {
+        public required string Email { get; set; }
+        public required string Contraseña { get; set; }
+    }
 }

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto_StoreWare.Interfaces;
 using Proyecto_StoreWare.Models;
 
 namespace Proyecto_StoreWare.Controllers.Api
@@ -9,94 +8,71 @@ namespace Proyecto_StoreWare.Controllers.Api
     [ApiController]
     public class ProductoApiController : ControllerBase
     {
-        private readonly StoreWare _context;
+        private readonly IProductoService _productoService;
 
-        public ProductoApiController(StoreWare context)
+        
+        public ProductoApiController(IProductoService productoService)
         {
-            _context = context;
+            _productoService = productoService;
         }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
-            return await _context.Producto.Include(p => p.Proveedor).ToListAsync();
+            var productos = await _productoService.GetAllProductosAsync();
+            return Ok(productos);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Producto>> GetProducto(int id)
         {
-            var producto = await _context.Producto.Include(p => p.Proveedor).FirstOrDefaultAsync(p => p.Id == id);
-            if (producto == null)
-            {
-                return NotFound();
-            }
-            return producto;
+            var producto = await _productoService.GetProductoByIdAsync(id);
+            return producto != null ? Ok(producto) : NotFound();
+        }
+
+        [HttpGet("categoria/{categoria}")]
+        public async Task<ActionResult<IEnumerable<Producto>>> GetByCategoria(string categoria)
+        {
+            var productos = await _productoService.GetProductosByCategoriaAsync(categoria);
+            return Ok(productos);
         }
 
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(Producto producto)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Producto.Add(producto);
-                await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetProducto), new { id = producto.Id }, producto);
-            }
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _productoService.AddProductoAsync(producto);
+            return result ? CreatedAtAction(nameof(GetProducto), new { id = producto.Id }, producto) : BadRequest();
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducto(int id, Producto producto)
         {
-            if (id != producto.Id)
-            {
+            if (id != producto.Id || !ModelState.IsValid)
                 return BadRequest();
-            }
 
-            if (ModelState.IsValid)
-            {
-                _context.Entry(producto).State = EntityState.Modified;
+            var existe = await _productoService.GetProductoByIdAsync(id);
+            if (existe == null)
+                return NotFound();
 
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductoExists(producto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-
-                return NoContent();
-            }
-
-            return BadRequest(ModelState);
+            var result = await _productoService.UpdateProductoAsync(producto);
+            return result ? NoContent() : BadRequest();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductoById(int id)
         {
-            var producto = await _context.Producto.FindAsync(id);
-            if (producto == null)
-            {
-                return NotFound();
-            }
-
-            _context.Producto.Remove(producto);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            var result = await _productoService.DeleteProductoAsync(id);
+            return result ? NoContent() : NotFound();
         }
 
-        private bool ProductoExists(int id)
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<Producto>>> SearchProductos([FromQuery] string keyword)
         {
-            return _context.Producto.Any(e => e.Id == id);
+            var productos = await _productoService.SearchProductosAsync(keyword);
+            return Ok(productos);
         }
-
     }
 }

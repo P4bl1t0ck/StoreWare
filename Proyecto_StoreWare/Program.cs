@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Proyecto_StoreWare.Data.Repositories;
+using Proyecto_StoreWare.Interfaces;
 using Proyecto_StoreWare.Models;
+using Proyecto_StoreWare.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 /*builder.Services.AddDbContext<StoreWare>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));*/
 
-/*
+/*//I was triying to use SQLite for local development, but it was not working as expected.
+ * perhaps it was not configured correctly.
+ * Please, just ignore this code snippet, and use the one below.
 builder.Services.AddDbContext<StoreWare>(options =>
 {
 #if ANDROID || IOS
@@ -17,15 +22,19 @@ builder.Services.AddDbContext<StoreWare>(options =>
 #endif
 });*/
 
-// SQL Server (original)
+// SQL Server 
 builder.Services.AddDbContext<StoreWare>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// SQLite (nuevo)
+// SQLite
 builder.Services.AddDbContext<StoreWareSQLite>(options =>
     options.UseSqlite("Data Source=StoreWareLocal.db"));
 
-
+// Añadir servicios de la aplicación
+// Registra los repositorios
+builder.Services.AddScoped<IProductoService, ProductoRepository>();
+builder.Services.AddScoped<IVentaService, VentaRepositorie>();
+builder.Services.AddScoped<IUsuarioService, UsuarioRepositorie>();
 // Añadir controladores
 builder.Services.AddControllers();
 

@@ -1,107 +1,50 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Proyecto_StoreWare.Interfaces;
 using Proyecto_StoreWare.Models;
 
-namespace Proyecto_StoreWare.Controllers.Api
+namespace Proyecto_StoreWare.Data.Repositories
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PagoApiController : ControllerBase
+    public class PagoRepository : IVentasService
     {
-        private readonly StoreWare _context;
+        private readonly StoreWareSQLite _context;
 
-        public PagoApiController(StoreWare context)
+        public PagoRepository(StoreWareSQLite context)
         {
             _context = context;
         }
 
-        // GET: api/PagoApi/all
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pago>>> GetAllPagos()
+        public async Task<List<Pago>> GetAllPagosAsync()
+            => await _context.Pagos.Include(p => p.Transacciones).ToListAsync();
+
+        public async Task<Pago?> GetPagoByIdAsync(int id)
+            => await _context.Pagos
+                .Include(p => p.Transacciones)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+        public async Task<bool> CreatePagoAsync(Pago pago)
         {
-            return await _context.Pago.ToListAsync();
+            await _context.Pagos.AddAsync(pago);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Pago>> GetPagoById(int id)
+        public async Task<bool> UpdatePagoAsync(Pago pago)
         {
-            var pago = await _context.Pago.FindAsync(id);
-            if (pago == null)
-            {
-                return NotFound();
-            }
-            return pago;
+            _context.Pagos.Update(pago);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Pago>> PostPago(Pago pago)
+        public async Task<bool> DeletePagoAsync(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var pago = await GetPagoByIdAsync(id);
+            if (pago == null) return false;
 
-            _context.Pago.Add(pago);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetPagoById), new { id = pago.Id }, pago);
+            _context.Pagos.Remove(pago);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPago(int id, Pago pago)
-        {
-            if (id != pago.Id)
-            {
-                return BadRequest();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Entry(pago).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PagoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePago(int id)
-        {
-            var pago = await _context.Pago.FindAsync(id);
-            if (pago == null)
-            {
-                return NotFound();
-            }
-
-            _context.Pago.Remove(pago);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool PagoExists(int id)
-        {
-            return _context.Pago.Any(e => e.Id == id);
-        }
-
+        public async Task<List<Pago>> GetPagosByUsuarioAsync(int usuarioId)
+            => await _context.Pagos
+                .Where(p => p.Transacciones.Any(t => t.UsuarioId == usuarioId))
+                .ToListAsync();
     }
-
 }
