@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 /*builder.Services.AddDbContext<StoreWare>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));*/
 
-
+/*
 builder.Services.AddDbContext<StoreWare>(options =>
 {
 #if ANDROID || IOS
@@ -15,7 +15,16 @@ builder.Services.AddDbContext<StoreWare>(options =>
 #else
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 #endif
-});
+});*/
+
+// SQL Server (original)
+builder.Services.AddDbContext<StoreWare>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// SQLite (nuevo)
+builder.Services.AddDbContext<StoreWareSQLite>(options =>
+    options.UseSqlite("Data Source=StoreWareLocal.db"));
+
 
 // Añadir controladores
 builder.Services.AddControllers();

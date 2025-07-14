@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace Proyecto_StoreWare.Models
 {
     public class Proveedor

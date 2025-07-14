@@ -1,36 +1,40 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Proyecto_StoreWare.Models
 {
+    [Table("Transacciones")]
+    [Index(nameof(UsuarioId))]
+    [Index(nameof(ProductoId))]
     public class Transaccion
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        [ForeignKey("Usuario")]
+
         public int UsuarioId { get; set; }
+        public int ProductoId { get; set; }
+        public int PagoId { get; set; }
+
+        [ForeignKey("UsuarioId")]
         public Usuario Usuario { get; set; }
 
-        [Required]
-        [ForeignKey("Producto")]
-        public int ProductoId { get; set; }
+        [ForeignKey("ProductoId")]
         public Producto Producto { get; set; }
 
-        [Required]
-        [ForeignKey("Pago")]
-        public int PagoId { get; set; }    
+        [ForeignKey("PagoId")]
         public Pago Pago { get; set; }
 
-        [Required(ErrorMessage = "La cantidad es obligatoria.")]
-        [Range(1,999, ErrorMessage = "La cantidad debe ser al menos 1.")]
+        [Required]
+        [Range(1, 999)]
         public int Cantidad { get; set; }
 
-        [Required(ErrorMessage ="Ingrese la fecha del mismo dia de la transaccion.")]
+        [Required]
+        [Column(TypeName = "TEXT")]
         public DateTime Fecha { get; set; }
 
-        [Required(ErrorMessage = "El estado es obligatorio.")]
-        [MaxLength(20, ErrorMessage = "El estado no puede tener más de 20 caracteres.")]
+        [Required]
+        [MaxLength(20)]
         public string Estado { get; set; }
     }
 }
