@@ -1,46 +1,38 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace Proyecto_StoreWare.Models
 {
-    [Table("Productos")] // Explicitamos el nombre de la tabla
     public class Producto
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Para autoincrement en SQLite
         public int Id { get; set; }
 
-        [Required]
         [MaxLength(100)]
-        public string Nombre { get; set; }
+        public string? Nombre { get; set; } // Hacer nullable
 
-        [Required]
         [MaxLength(500)]
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; }
 
-        // SQLite no soporta "Precision(18,2)" directamente. Alternativas:
-        [Required]
-        [Range(1.00, 100000.00)]
-        [Column(TypeName = "decimal(18,2)")] // Conversión implícita en SQLite
-        public decimal Precio { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? Precio { get; set; } // Hacer nullable
 
-        [Required]
-        [Range(0, 999)]
-        public int Stock { get; set; }
+        public int? Stock { get; set; } // Hacer nullable
 
-        [Required]
         [MaxLength(50)]
-        public string Categoria { get; set; }
+        public string? Categoria { get; set; }
 
-        // Relación con Proveedor (ajustada para SQLite)
-        [Required]
+        public int? ProveedorId { get; set; } // Hacer nullable
+
         [ForeignKey("ProveedorId")]
-        public int ProveedorId { get; set; }
+        public virtual Proveedor? Proveedor { get; set; } // Hacer nullable
 
-        public Proveedor Proveedor { get; set; }
+        public int? AdminId { get; set; } // Hacer nullable
 
-        // Colección de Transacciones (relación inversa)
-        public ICollection<Transaccion> Transacciones { get; set; } = new HashSet<Transaccion>();
+        [ForeignKey("AdminId")]
+        public virtual Administrador? Admin { get; set; } // Hacer nullable
+
+        public bool Activo { get; set; } = true; // Valor por defecto
+        public virtual ICollection<Transaccion>? Transaccion { get; set; }
     }
 }

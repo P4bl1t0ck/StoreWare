@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Proyecto_StoreWare.Interfaces;
 using Proyecto_StoreWare.Models;
 
@@ -24,10 +25,12 @@ namespace Proyecto_StoreWare.Controllers.Api
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Producto>> GetProducto(int id)
+        public async Task<ActionResult<Producto?>> GetProductoByIdAsync(int id)
         {
             var producto = await _productoService.GetProductoByIdAsync(id);
-            return producto != null ? Ok(producto) : NotFound();
+            if (producto == null)
+                return NotFound();
+            return Ok(producto);
         }
 
         [HttpGet("categoria/{categoria}")]
@@ -36,7 +39,7 @@ namespace Proyecto_StoreWare.Controllers.Api
             var productos = await _productoService.GetProductosByCategoriaAsync(categoria);
             return Ok(productos);
         }
-
+        /*
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(Producto producto)
         {
@@ -44,8 +47,26 @@ namespace Proyecto_StoreWare.Controllers.Api
                 return BadRequest(ModelState);
 
             var result = await _productoService.AddProductoAsync(producto);
-            return result ? CreatedAtAction(nameof(GetProducto), new { id = producto.Id }, producto) : BadRequest();
+            return result ? CreatedAtAction(nameof(GetProductoByIdAsync), new { id = producto.Id }, producto) : BadRequest();
         }
+        */
+        [HttpPost]
+        public async Task<ActionResult<Producto>> PostProducto([FromBody] Producto producto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _productoService.AddProductoAsync(producto);
+            if (!result)
+                return BadRequest("No se pudo crear el producto.");
+
+            // En este punto el contexto debería haber asignado Id
+            // Si quieres recargarlo de la DB (opcional):
+            // var created = await _productoService.GetProductoByIdAsync(producto.Id) ?? producto;
+
+            return Ok(producto);
+        }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducto(int id, Producto producto)

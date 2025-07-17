@@ -6,6 +6,7 @@ using Proyecto_StoreWare.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Configurar DbContext con cadena de conexión (ejemplo con SQL Server)
 /*builder.Services.AddDbContext<StoreWare>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));*/
@@ -55,6 +56,41 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var sp = scope.ServiceProvider;
+    var db = sp.GetRequiredService<StoreWareSQLite>();
+    db.Database.EnsureCreated();
+
+    // Seed Admin
+    if (!db.Set<Administrador>().Any())
+    {
+        db.Set<Administrador>().Add(new Administrador
+        {
+            Nombre = "Admin Demo",
+            Email = "admin@demo.com",
+            Contraseña = "123456"
+        });
+        db.SaveChanges();
+    }
+
+    var adminId = db.Set<Administrador>().Select(a => a.Id).First();
+
+    // Seed Proveedor
+    if (!db.Set<Proveedor>().Any())
+    {
+        db.Set<Proveedor>().Add(new Proveedor
+        {
+            AdministradorId = adminId,
+            Nombre = "Proveedor Demo",
+            Email = "proveedor@demo.com",
+            Telefono = "+593000000000"
+        });
+        db.SaveChanges();
+    }
+}
+
+
 app.UseCors("AllowAll");
 
 // Middleware para desarrollo (Swagger)
@@ -64,11 +100,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Si más adelante configuras certificado puedes reactivarlo fuera de dev:
+// if (!app.Environment.IsDevelopment())
+// {
+//     app.UseHttpsRedirection();
+// }
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/swagger");
+    return Task.CompletedTask;
+});
+/*
 app.Use(async (context, next) =>
 {
     if (context.Request.Path == "/")
@@ -78,5 +125,5 @@ app.Use(async (context, next) =>
     }
     await next();
 });
-
+*/
 app.Run();

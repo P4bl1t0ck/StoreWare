@@ -31,10 +31,9 @@ public DbSet<Proyecto_StoreWare.Models.Administrador> Administrador { get; set; 
             .Property(p => p.Precio)
             .HasColumnType("decimal(18,2)"); // Soporte para decimal
 
-        // Configura relaciones si es necesario
-        modelBuilder.Entity<Transaccion>()
-            .HasOne(t => t.Producto)
-            .WithMany(p => p.Transacciones)
-            .HasForeignKey(t => t.ProductoId);
+            modelBuilder.Entity<Transaccion>()
+        .HasOne(t => t.Producto)
+        .WithMany(p => p.Transaccion)
+        .HasForeignKey(t => t.ProductoId);
     }
 }

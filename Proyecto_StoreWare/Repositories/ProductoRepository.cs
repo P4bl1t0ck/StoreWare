@@ -27,9 +27,10 @@ namespace Proyecto_StoreWare.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<Producto?> GetProductoByIdAsync(int id)
+        public async Task<Producto?> GetProductoByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Productos
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<bool> UpdateProductoAsync(Producto producto)
@@ -42,7 +43,8 @@ namespace Proyecto_StoreWare.Data.Repositories
         public async Task<List<Producto>> SearchProductosAsync(string keyword)
         {
             return await _context.Productos
-                .Where(p => p.Nombre.Contains(keyword) || p.Descripcion.Contains(keyword))
+                .Where(p => (p.Nombre != null && p.Nombre.Contains(keyword)) ||
+                            (p.Descripcion != null && p.Descripcion.Contains(keyword)))
                 .ToListAsync();
         }
 
@@ -74,8 +76,10 @@ namespace Proyecto_StoreWare.Data.Repositories
         //COmo ?, sabra dios, y el que escribio el codigo jajajaj
 
         //Creamos un metodo que permita el buscar n producto por su nombre
-        public async Task<List<Producto>> BuscarProductosAsync(string nombre) => await _context.Productos
-                .Where(p => p.Nombre.Contains(nombre) || p.Descripcion.Contains(nombre))
+        public async Task<List<Producto>> BuscarProductosAsync(string nombre) 
+            => await _context.Productos
+                .Where(p => (p.Nombre != null && p.Nombre.Contains(nombre)) || 
+                            (p.Descripcion != null && p.Descripcion.Contains(nombre)))
                 .ToListAsync();
     }
 }

@@ -43,5 +43,12 @@ public class StoreWareSQLite : DbContext
         .HasMany(u => u.Transacciones)
         .WithOne(t => t.Usuario)
         .HasForeignKey(t => t.UsuarioId);
+        // Transacciones
+        modelBuilder.Entity<Pago>()
+        .HasMany(p => p.Transacciones)
+        .WithOne(t => t.Pago)
+        .HasForeignKey(t => t.PagoId)
+        .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

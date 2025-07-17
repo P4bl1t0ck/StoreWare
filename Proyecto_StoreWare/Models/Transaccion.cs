@@ -5,36 +5,29 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Proyecto_StoreWare.Models
 {
     [Table("Transacciones")]
-    [Index(nameof(UsuarioId))]
-    [Index(nameof(ProductoId))]
     public class Transaccion
     {
         [Key]
         public int Id { get; set; }
 
-        public int UsuarioId { get; set; }
-        public int ProductoId { get; set; }
-        public int PagoId { get; set; }
+        public int? UsuarioId { get; set; } // Hacer nullable
+        public int? ProductoId { get; set; } // Hacer nullable
+        public int? PagoId { get; set; } // Hacer nullable
 
         [ForeignKey("UsuarioId")]
-        public Usuario Usuario { get; set; }
+        public virtual Usuario? Usuario { get; set; }
 
         [ForeignKey("ProductoId")]
-        public Producto Producto { get; set; }
+        public virtual Producto? Producto { get; set; }
 
         [ForeignKey("PagoId")]
-        public Pago Pago { get; set; }
+        public virtual Pago? Pago { get; set; }
 
-        [Required]
-        [Range(1, 999)]
-        public int Cantidad { get; set; }
+        public int? Cantidad { get; set; } // Hacer nullable
 
-        [Required]
-        [Column(TypeName = "TEXT")]
-        public DateTime Fecha { get; set; }
+        public DateTime? Fecha { get; set; } // Hacer nullable
 
-        [Required]
         [MaxLength(20)]
-        public string Estado { get; set; }
+        public string? Estado { get; set; } // Hacer nullable
     }
 }

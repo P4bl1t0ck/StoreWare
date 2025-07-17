@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
+namespace Proyecto_StoreWare.Migrations.SQLite
 {
     [DbContext(typeof(StoreWareSQLite))]
-    [Migration("20250714003216_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250717080421_InitialNullableModels")]
+    partial class InitialNullableModels
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,18 +25,17 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Contraseña")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nombre")
-                        .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
@@ -51,13 +50,14 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Nombre")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Tipo")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
@@ -72,31 +72,36 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AdminId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Categoria")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Descripcion")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nombre")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Precio")
+                    b.Property<decimal?>("Precio")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProveedorId")
+                    b.Property<int?>("ProveedorId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Stock")
+                    b.Property<int?>("Stock")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
 
                     b.HasIndex("ProveedorId");
 
@@ -109,20 +114,17 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AdministradorId")
+                    b.Property<int?>("AdministradorId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nombre")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Telefono")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -138,24 +140,23 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Cantidad")
+                    b.Property<int?>("Cantidad")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Estado")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime?>("Fecha")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PagoId")
+                    b.Property<int?>("PagoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ProductoId")
+                    b.Property<int?>("ProductoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UsuarioId")
+                    b.Property<int?>("UsuarioId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -176,28 +177,23 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Contraseña")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Direccion")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nombre")
-                        .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Telefono")
-                        .IsRequired()
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -206,11 +202,15 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
 
             modelBuilder.Entity("Proyecto_StoreWare.Models.Producto", b =>
                 {
+                    b.HasOne("Proyecto_StoreWare.Models.Administrador", "Admin")
+                        .WithMany()
+                        .HasForeignKey("AdminId");
+
                     b.HasOne("Proyecto_StoreWare.Models.Proveedor", "Proveedor")
                         .WithMany("Productos")
-                        .HasForeignKey("ProveedorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProveedorId");
+
+                    b.Navigation("Admin");
 
                     b.Navigation("Proveedor");
                 });
@@ -220,8 +220,7 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
                     b.HasOne("Proyecto_StoreWare.Models.Administrador", "Administrador")
                         .WithMany()
                         .HasForeignKey("AdministradorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Administrador");
                 });
@@ -231,20 +230,15 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
                     b.HasOne("Proyecto_StoreWare.Models.Pago", "Pago")
                         .WithMany("Transacciones")
                         .HasForeignKey("PagoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Proyecto_StoreWare.Models.Producto", "Producto")
-                        .WithMany("Transacciones")
-                        .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Transaccion")
+                        .HasForeignKey("ProductoId");
 
                     b.HasOne("Proyecto_StoreWare.Models.Usuario", "Usuario")
                         .WithMany("Transacciones")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UsuarioId");
 
                     b.Navigation("Pago");
 
@@ -260,7 +254,7 @@ namespace Proyecto_StoreWare.Migrations.StoreWareSQLiteMigrations
 
             modelBuilder.Entity("Proyecto_StoreWare.Models.Producto", b =>
                 {
-                    b.Navigation("Transacciones");
+                    b.Navigation("Transaccion");
                 });
 
             modelBuilder.Entity("Proyecto_StoreWare.Models.Proveedor", b =>

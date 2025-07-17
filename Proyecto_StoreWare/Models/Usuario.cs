@@ -1,38 +1,29 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace Proyecto_StoreWare.Models
 {
-    [Table("Usuarios")] // Personaliza nombre de tabla
+    [Table("Usuarios")]
     public class Usuario
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto-increment en SQLite
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(40, ErrorMessage = "Solo se permiten nombres de hasta 40 caracteres")]
-        public string Nombre { get; set; }
+        [MaxLength(40)]
+        public string? Nombre { get; set; } // Hacer nullable
 
-        [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
-        [EmailAddress(ErrorMessage = "Ingrese un correo válido.")]
-        public string Email { get; set; }
+        [EmailAddress]
+        public string? Email { get; set; } // Hacer nullable
 
-        [Required(ErrorMessage = "La contraseña es obligatoria.")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Mínimo 6 caracteres")]
-        public string Contraseña { get; set; }
+        [MaxLength(100)]
+        public string? Contraseña { get; set; } // Hacer nullable
 
-        [Required(ErrorMessage = "Dirección requerida")]
-        [MaxLength(100, ErrorMessage = "Máximo 100 caracteres")]
-        public string Direccion { get; set; }
+        [MaxLength(100)]
+        public string? Direccion { get; set; } // Hacer nullable
 
-        [Required(ErrorMessage = "Teléfono obligatorio")]
-        [MaxLength(15, ErrorMessage = "Máximo 15 caracteres")]
-        [Column(TypeName = "varchar(15)")] // Optimizado para SQLite
-        public string Telefono { get; set; }
+        [MaxLength(15)]
+        public string? Telefono { get; set; } // Hacer nullable
+        public ICollection<Transaccion> Transacciones { get; set; } = new List<Transaccion>();
 
-        // Relación con Transacciones (CORREGIDO)
-        public ICollection<Transaccion> Transacciones { get; set; } = new HashSet<Transaccion>();
     }
 }
