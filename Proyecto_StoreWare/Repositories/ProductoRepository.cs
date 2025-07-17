@@ -39,6 +39,12 @@ namespace Proyecto_StoreWare.Data.Repositories
             //De forma asíncrona, guarda los cambios en la base de datos
             return await _context.SaveChangesAsync() > 0;
         }
+        public async Task<List<Producto>> SearchProductosAsync(string keyword)
+        {
+            return await _context.Productos
+                .Where(p => p.Nombre.Contains(keyword) || p.Descripcion.Contains(keyword))
+                .ToListAsync();
+        }
 
         public async Task<bool> DeleteProductoAsync(int id)
         {

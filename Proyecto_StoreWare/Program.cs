@@ -42,7 +42,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 // Middleware para desarrollo (Swagger)
 if (app.Environment.IsDevelopment())
@@ -65,6 +78,5 @@ app.Use(async (context, next) =>
     }
     await next();
 });
-
 
 app.Run();
