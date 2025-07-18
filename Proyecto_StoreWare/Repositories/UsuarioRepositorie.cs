@@ -19,9 +19,11 @@ namespace Proyecto_StoreWare.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<Usuario?> LoginAsync(string email, string contraseña)
-            => await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == email && u.Contraseña == contraseña);
+        public async Task<Usuario?> LoginAsync(string email, string password)
+        {
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email == email && u.Contraseña == password);
+        }
 
         public async Task<Usuario?> GetUsuarioByIdAsync(int id)
         => await _context.Usuarios.FindAsync(id);

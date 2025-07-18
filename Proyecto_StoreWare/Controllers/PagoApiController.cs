@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Proyecto_StoreWare.Interfaces;
 using Proyecto_StoreWare.Models;
-
+using Proyecto_StoreWare.Interfaces;
 namespace Proyecto_StoreWare.Data.Repositories
 {
-    public class PagoRepository : IVentasService
+    public class PagoRepository : IVentaService
     {
         private readonly StoreWareSQLite _context;
 
@@ -46,5 +46,30 @@ namespace Proyecto_StoreWare.Data.Repositories
             => await _context.Pagos
                 .Where(p => p.Transacciones.Any(t => t.UsuarioId == usuarioId))
                 .ToListAsync();
+
+        public Task<bool> AddToCartAsync(Transaccion item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Transaccion>> GetCarritoAsync(int usuarioId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CheckoutAsync(int usuarioId, Pago metodoPago)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Transaccion>> GetHistorialComprasAsync(int usuarioId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Transaccion>> GetAllVentasAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

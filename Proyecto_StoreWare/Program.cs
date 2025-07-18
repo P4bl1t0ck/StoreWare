@@ -4,8 +4,10 @@ using Proyecto_StoreWare.Interfaces;
 using Proyecto_StoreWare.Models;
 using Proyecto_StoreWare.Repositories;
 
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
+var builder = WebApplication.CreateBuilder(args);
 
 // Configurar DbContext con cadena de conexión (ejemplo con SQL Server)
 /*builder.Services.AddDbContext<StoreWare>(options =>
@@ -54,8 +56,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-var app = builder.Build();
+// Configuración de autenticación JWT
 
+builder.Services.AddScoped<IUsuarioService, UsuarioRepositorie>();
+var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
 using (var scope = app.Services.CreateScope())
 {
     var sp = scope.ServiceProvider;
@@ -89,7 +95,6 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 }
-
 
 app.UseCors("AllowAll");
 

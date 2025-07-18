@@ -1,6 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Proyecto_StoreWare.Interfaces;
 using Proyecto_StoreWare.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Proyecto_StoreWare.Controllers.Api
 {
@@ -9,11 +15,13 @@ namespace Proyecto_StoreWare.Controllers.Api
     public class UsuariosApiController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;
+        private readonly IConfiguration _configuration;
 
         // Solo inyectamos el servicio, no el contexto directo
-        public UsuariosApiController(IUsuarioService usuarioService)
+        public UsuariosApiController(IUsuarioService usuarioService, IConfiguration configuration)
         {
             _usuarioService = usuarioService;
+            _configuration = configuration;
         }
         /*
         [HttpGet]
@@ -58,17 +66,20 @@ namespace Proyecto_StoreWare.Controllers.Api
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<Usuario>> Login(LoginRequest request)
+        public async Task<ActionResult<Usuario>> Login([FromBody] LoginRequest request)
         {
-            var usuario = await _usuarioService.LoginAsync(request.Email, request.Contraseña);
-            return usuario != null ? Ok(usuario) : Unauthorized();
+            var usuario = await _usuarioService.LoginAsync(request.Email, request.Password);
+
+            if (usuario == null)
+                return Unauthorized("Credenciales incorrectas"); 
+
+            return Ok(usuario); 
         }
     }
 
-    // DTO para login
     public class LoginRequest
     {
         public required string Email { get; set; }
-        public required string Contraseña { get; set; }
+        public required string Password { get; set; } 
     }
 }
