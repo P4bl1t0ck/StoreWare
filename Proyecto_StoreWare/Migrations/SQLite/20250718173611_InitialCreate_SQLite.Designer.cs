@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Proyecto_StoreWare.Migrations.SQLite
 {
     [DbContext(typeof(StoreWareSQLite))]
-    [Migration("20250717080421_InitialNullableModels")]
-    partial class InitialNullableModels
+    [Migration("20250718173611_InitialCreate_SQLite")]
+    partial class InitialCreate_SQLite
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
