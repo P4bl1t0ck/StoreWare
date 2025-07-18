@@ -10,6 +10,7 @@ namespace Proyecto_StoreWare.Interfaces
         Task<List<Producto>> GetAllProductosAsync();
         Task<List<Producto>> GetProductosByCategoriaAsync(string categoria); // Licencias/Hardware
         Task<Producto?> GetProductoByIdAsync(int id);
+        /*Administrrador*/
         Task<bool> AddProductoAsync(Producto producto);
         Task<bool> UpdateProductoAsync(Producto producto);
         Task<bool> DeleteProductoAsync(int id);

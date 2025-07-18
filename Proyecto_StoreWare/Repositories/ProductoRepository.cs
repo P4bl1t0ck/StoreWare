@@ -25,6 +25,7 @@ namespace Proyecto_StoreWare.Data.Repositories
         {
             await _context.Productos.AddAsync(producto);
             return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<Producto?> GetProductoByIdAsync(int id)
